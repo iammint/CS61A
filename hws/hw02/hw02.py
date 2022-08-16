@@ -1,4 +1,6 @@
+from math import comb
 from operator import add, mul, sub
+from re import M
 
 square = lambda x: x * x
 
@@ -52,14 +54,20 @@ def accumulate(combiner, base, n, term):
     25
     >>> accumulate(mul, 2, 3, square)    # 2 * 1^2 * 2^2 * 3^2
     72
-    >>> accumulate(lambda x, y: x + y + 1, 2, 3, square)
+    >>> accumulate(lambda x, y: x + y + 1, 2, 3, square) # 2 + 1^2 + 2^2 + 3^2 + 1*3
     19
-    >>> accumulate(lambda x, y: 2 * (x + y), 2, 3, square)
+    >>> accumulate(lambda x, y: 2 * (x + y), 2, 3, square) 
     58
-    >>> accumulate(lambda x, y: (x + y) % 17, 19, 20, square)
+    >>> accumulate(lambda x, y: (x + y) % 17, 19, 20, square) # (19 + 1^2 + 2^2 + 3^2 + ... + 20^2) % 17
     16
     """
     "*** YOUR CODE HERE ***"
+    i = 1
+    while i <= n:
+        base = combiner(base, term(i))
+        i += 1
+    return base
+
 
 def summation_using_accumulate(n, term):
     """Returns the sum of term(1) + ... + term(n). The implementation
@@ -76,6 +84,7 @@ def summation_using_accumulate(n, term):
     True
     """
     "*** YOUR CODE HERE ***"
+    return accumulate(add, 0, n, term)
 
 def product_using_accumulate(n, term):
     """An implementation of product using accumulate.
@@ -91,7 +100,7 @@ def product_using_accumulate(n, term):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    return accumulate(mul, 1, n, term)
 
 def compose1(func1, func2):
     """Return a function f, such that f(x) = func1(func2(x))."""
@@ -114,7 +123,7 @@ def make_repeater(func, n):
     5
     """
     "*** YOUR CODE HERE ***"
-
+    
 
 def zero(f):
     return lambda x: x
