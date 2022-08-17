@@ -246,3 +246,37 @@ Then, the interaction can be verified via the <font color="red">doctest module</
 >>> testmod()
 TestResults(failed=0, attempted=2)
 ```
+
+# Higher-Order Function
+
+## The properse of Higher-order functions
+
+**Functions are first-class:** Functions can be manipulated as values in our programming language.
+
+Higher-order function: A function takes a function as an argument value or returns a function as a result.
+
+Higher-order functions:
+
+- Express general methods of computation
+- Remove repetition from programs
+- Seperate concerns among functions
+
+## Function Currying
+
+> Currying: Transforming a multi-argument function into a single-argument, higher-order function.
+
+```py
+def curry2(f):
+    def g(x):
+        def h(y):
+            return f(x, y)
+        return h
+    return g
+```
+
+```py
+curry2 = lambda f: lambda x: lambda y: f(x, y)
+m = curry2(add)
+m(1)(2)
+# 3
+```
