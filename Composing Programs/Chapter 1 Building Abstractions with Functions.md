@@ -247,7 +247,7 @@ Then, the interaction can be verified via the <font color="red">doctest module</
 TestResults(failed=0, attempted=2)
 ```
 
-# Higher-Order Function
+# 1.6 Higher-Order Function
 
 ## The properse of Higher-order functions
 
