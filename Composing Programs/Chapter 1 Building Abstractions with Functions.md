@@ -249,8 +249,6 @@ TestResults(failed=0, attempted=2)
 
 # 1.6 Higher-Order Function
 
-## The properse of Higher-order functions
-
 **Functions are first-class:** Functions can be manipulated as values in our programming language.
 
 Higher-order function: A function takes a function as an argument value or returns a function as a result.
@@ -260,6 +258,32 @@ Higher-order functions:
 - Express general methods of computation
 - Remove repetition from programs
 - Seperate concerns among functions
+
+## Functions as Arguments
+
+```py
+def summation(n, term):
+    total, k = 0, 1
+    while k <= n:
+        total, k = total + term(k), k + 1
+    return total
+def cubes(x):
+    return x * x * x
+def sum_cubes(n):
+    return summation(n, cubes)
+```
+
+```py
+def horse(mask):
+    horse = mask
+    def mask(horse):
+        return horse
+    return horse(mask)
+mask = lambda horse: horse(2)
+horse(mask)
+```
+将mask作为参数传入horse函数，进入horse函数体：horse被赋值为mask函数，由于在一个环境中mask变量只能指代一个，因此mask赋值更新为函数`return horse`，函数最后返回的内容为 `return lambda horse: horse(2)`其中参数horse值为mask函数，因此最后将2传入mask函数，返回值为2
+
 
 ## Function Currying
 

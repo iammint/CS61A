@@ -117,7 +117,10 @@ def silence(score0, score1):
     """Announce nothing (see Phase 2)."""
     return silence
 
-
+def feral_hogs(pre_score, cur_dices, cur_score):
+    if abs(cur_dices - pre_score) == 2:
+        cur_score += 3
+    return cur_score
 def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
          goal=GOAL_SCORE, say=silence, feral_hogs=True):
     """Simulate a game and return the final scores of both players, with Player
@@ -139,21 +142,30 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    scoreFor0, scoreFor1 = 0, 0
     while score0 < goal and score1 < goal:
         if who == 0:
             # Calculate the nums_rolls
             dice0 = strategy0(score0, score1)
-            score0 += take_turn(dice0, score1, dice)
+            if abs(dice0 - scoreFor0) == 2 and feral_hogs:
+                score0 += 3
+            scoreFor0 = take_turn(dice0, score1, dice)
+            score0 += scoreFor0
             if is_swap(score0, score1):
                 score0, score1 = score1, score0
         else:
             dice1 = strategy1(score1, score0)
-            score1 += take_turn(dice1, score0, dice)
+            if abs(dice1 - scoreFor1) == 2 and feral_hogs:
+                score1 += 3
+            scoreFor1 = take_turn(dice1, score0, dice)
+            score1 += scoreFor1
             if is_swap(score1, score0):
                 score1, score0 = score0, score1
+        if score0 >= goal or score1 >= goal:
+            return score0, score1
         who = other(who)
+        say = say(score0, score1)
     return score0, score1
-
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
