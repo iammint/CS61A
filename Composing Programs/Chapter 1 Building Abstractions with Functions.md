@@ -282,8 +282,8 @@ def horse(mask):
 mask = lambda horse: horse(2)
 horse(mask)
 ```
-将mask作为参数传入horse函数，进入horse函数体：horse被赋值为mask函数，由于在一个环境中mask变量只能指代一个，因此mask赋值更新为函数`return horse`，函数最后返回的内容为 `return lambda horse: horse(2)`其中参数horse值为mask函数，因此最后将2传入mask函数，返回值为2
 
+将 mask 作为参数传入 horse 函数，进入 horse 函数体：horse 被赋值为 mask 函数，由于在一个环境中 mask 变量只能指代一个，因此 mask 赋值更新为函数`return horse`，函数最后返回的内容为 `return lambda horse: horse(2)`其中参数 horse 值为 mask 函数，因此最后将 2 传入 mask 函数，返回值为 2
 
 ## Function Currying
 
@@ -304,3 +304,126 @@ m = curry2(add)
 m(1)(2)
 # 3
 ```
+
+# 1.7 Recursion
+
+## 1. Mutual Recursion
+
+> When a recursive procedure is divided among two functions that call each other, the functions are said to be _mutually recursive_.
+
+As an example, consider the following definition of even and odd for non-negative integers:
+
+- a number is even if it is one more than an odd number
+- a number is odd if it is one more than an even number
+- 0 is even
+
+```py
+def is_even(n):
+    if n == 0:
+        return True
+    else:
+        return is_odd(n - 1)
+
+def is_odd(n):
+    if n == 0:
+        return False
+    else:
+        return is_even(n - 1)
+result = is_even(4)
+```
+
+Mutually recursive functions can be turned into a single recursive function by breaking the abstraction boundary between the two functions.
+
+```py
+def is_even(n):
+        if n == 0:
+            return True
+        else:
+            if (n-1) == 0:
+                return False
+            else:
+                return is_even((n-1)-1)
+```
+
+## 2. Printing in recursive functions
+
+> The computational process evolved by a recursive function can often be visualized using calls to print.
+
+As an example, we will implement a function `cascade` that prints all prefixes of a number from largest to smallest to largest.
+
+```py
+def cascade(num):
+    if num < 10:
+        print(num)
+    else:
+        print(num)
+        cascade(num // 10)
+        print(num)
+
+cascade(2013)
+```
+
+Same as:
+
+```py
+def cascade(n):
+        """Print a cascade of prefixes of n."""
+        print(n)
+        if n >= 10:
+            cascade(n//10)
+            print(n)
+```
+
+```
+>>> cascade(2013)
+2013
+201
+20
+2
+20
+201
+2013
+```
+
+As another example of mutual recursion, consider a two-player game in which there are n initial pebbles on a table. The players take turns, removing either one or two pebbles from the table, and the player who removes the final pebble wins. Suppose that Alice and Bob play this game, each using a simple strategy:
+
+- Alice always removes a single pebble
+- Bob removes two pebbles if an even number of pebbles is on the table, and one otherwise
+
+Given n initial pebbles and Alice starting, who wins the game?
+
+```py
+def play_Alice(n):
+    if n == 0:
+        print('Bob wins!')
+    else:
+        play_Bob(n - 1)
+
+def play_Bob(n):
+    if n == 0:
+        print('Alice wins!')
+    elif n / 2 == 0:
+        play_Alice(n - 2)
+    else:
+        play_Alice(n - 1)
+
+play_Alice(20)
+```
+
+## 3. Tree Recursion
+
+> Another common pattern of computation is called tree recursion, in which a function calls itself more than once.
+
+As an example, consider computing the sequence of Fibonacci numbers, in which each number is the sum of the preceding two.
+
+```py
+def Fibonacci(n):
+    if n == 1:
+        return 0
+    if n == 2:
+        return 1
+    else:
+        return Fibonacci(n-1) + Fibonacci(n-2)
+```
+This recursive definition is tremendously appealing relative to our previous attempts: it exactly mirrors the familiar definition of Fibonacci numbers. A function with multiple recursive calls is said to be tree recursive because each call branches into multiple smaller calls, each of which branches into yet smaller calls, just as the branches of a tree become smaller but more numerous as they extend from the trunk.
+

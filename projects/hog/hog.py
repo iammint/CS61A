@@ -11,6 +11,7 @@ from calendar import different_locale
 from distutils import core
 from itertools import starmap
 import numbers
+from tkinter import scrolledtext
 from unittest import suite
 from dice import six_sided, four_sided, make_test_dice
 from ucb import main, trace, interact
@@ -255,6 +256,20 @@ def announce_highest(who, last_score=0, running_high=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def say(score0, score1):
+        if (who == 0):
+            current_increse = score0 - last_score
+            score = score0
+        else:
+            current_increse = score1 - last_score
+            score = score1
+
+        if (current_increse > running_high):
+            print(str(current_increse) + " point(s)! That's the biggest gain yet for Player " + str(who))
+            return announce_highest(who, score, current_increse)
+        return announce_highest(who, score, running_high)
+    return say
+        
     # END PROBLEM 7
 
 
