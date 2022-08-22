@@ -345,7 +345,7 @@ def is_even(n):
                 return is_even((n-1)-1)
 ```
 
-## 2. Printing in recursive functions
+## 2. Order of Recursive Calls
 
 > The computational process evolved by a recursive function can often be visualized using calls to print.
 
@@ -425,5 +425,5 @@ def Fibonacci(n):
     else:
         return Fibonacci(n-1) + Fibonacci(n-2)
 ```
-This recursive definition is tremendously appealing relative to our previous attempts: it exactly mirrors the familiar definition of Fibonacci numbers. A function with multiple recursive calls is said to be tree recursive because each call branches into multiple smaller calls, each of which branches into yet smaller calls, just as the branches of a tree become smaller but more numerous as they extend from the trunk.
 
+This recursive definition is tremendously appealing relative to our previous attempts: it exactly mirrors the familiar definition of Fibonacci numbers. A function with multiple recursive calls is said to be tree recursive because each call branches into multiple smaller calls, each of which branches into yet smaller calls, just as the branches of a tree become smaller but more numerous as they extend from the trunk.
