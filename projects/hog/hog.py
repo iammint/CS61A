@@ -8,9 +8,11 @@
 
 
 from calendar import different_locale
+from decimal import Underflow
 from distutils import core
 from itertools import starmap
 import numbers
+from re import I
 from tkinter import scrolledtext
 from unittest import suite
 from dice import six_sided, four_sided, make_test_dice
@@ -162,16 +164,15 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
             score1 += scoreFor1
             if is_swap(score1, score0):
                 score1, score0 = score0, score1
-        if score0 >= goal or score1 >= goal:
-            return score0, score1
         who = other(who)
         say = say(score0, score1)
-    return score0, score1
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
     "*** YOUR CODE HERE ***"
+    return score0, score1
     # END PROBLEM 6
+
 
 
 #######################
@@ -309,6 +310,14 @@ def make_averaged(original_function, trials_count=1000):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    def averaged(*args):
+        ans, i = 0, 0
+        while i < trials_count:
+            result = original_function(*args)
+            ans += result
+            i += 1
+        return ans / trials_count
+    return averaged
     # END PROBLEM 8
 
 
@@ -323,6 +332,15 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    i, ans, max = 1, 0, 1
+    while i <= 10:
+        averaged_dice = make_averaged(roll_dice, trials_count)
+        result = averaged_dice(i, dice)
+        if result > ans:
+            ans = result
+            max = i
+        i += 1
+    return max
     # END PROBLEM 9
 
 
@@ -372,7 +390,10 @@ def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+    if free_bacon(opponent_score) >= cutoff:
+        return 0
+    else:
+        return num_rolls
     # END PROBLEM 10
 
 
@@ -382,7 +403,18 @@ def swap_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     non-beneficial swap. Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    zeroDice = free_bacon(opponent_score)
+    curr_score = zeroDice + score
+    if is_swap(curr_score, opponent_score):
+        if opponent_score <= curr_score:
+            return num_rolls
+        else:
+            return 0
+    else:
+        if zeroDice >= cutoff:
+            return 0
+        else:
+            return num_rolls
     # END PROBLEM 11
 
 
