@@ -1,3 +1,6 @@
+import numbers
+
+
 HW_SOURCE_FILE=__file__
 
 
@@ -12,6 +15,12 @@ def pascal(row, column):
     3
     """
     "*** YOUR CODE HERE ***"
+    if column == 0 or column == row:
+        return 1
+    if column > row:
+        return 0
+    return pascal(row - 1, column - 1) + pascal(row - 1, column)
+    
 
 
 def compose1(f, g):
@@ -40,6 +49,12 @@ def repeated(f, n):
     True
     """
     "*** YOUR CODE HERE ***"
+    def take_argument(x):
+        if n == 0:
+            return x 
+        return compose1(f, repeated(f, n-1))(x)
+    return take_argument
+
 
 
 def num_eights(x):
@@ -47,7 +62,8 @@ def num_eights(x):
 
     >>> num_eights(3)
     0
-    >>> num_eights(8)
+    >>> num_eight
+    s(8)
     1
     >>> num_eights(88888888)
     8
@@ -64,7 +80,11 @@ def num_eights(x):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    if x == 8:
+        return 1
+    elif x < 10:
+        return 0
+    return num_eights(x % 10) + num_eights(x // 10)
 
 def pingpong(n):
     """Return the nth element of the ping-pong sequence.
@@ -99,4 +119,11 @@ def pingpong(n):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    def helper(value, index, direction):
+        if index == n:
+            return value
+        elif index % 8 == 0 or num_eights(index) != 0:
+            return helper(value - direction, index + 1, direction * -1)
+        else:
+            return helper(value + direction, index + 1, direction)
+    return helper(1, 1, 1)
