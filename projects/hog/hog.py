@@ -60,9 +60,10 @@ def free_bacon(score):
     assert score < 100, 'The game should be over.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
-    ones = score % 10
-    tens = (score - ones) // 10
-    return (10 - ones + tens)
+    # ones = score % 10
+    # tens = (score - ones) // 10
+    # return (10 - ones + tens)
+    return 10 - score % 10 + score // 10 % 10
     # END PROBLEM 2
 
 
@@ -93,13 +94,8 @@ def is_swap(player_score, opponent_score):
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
-    player_ones = player_score % 10
-    opponent_ones = opponent_score % 10
-    if opponent_score >= 100:
-        opponent_tens = (opponent_score // 10) % 10
-    else:    
-        opponent_tens = (opponent_score - opponent_ones) // 10
-    if abs(player_ones - opponent_ones) == opponent_tens:
+    difference = abs(player_score % 10 - opponent_score % 10)
+    if difference == opponent_score // 10 % 10:
         return True
     return False
     # END PROBLEM 4
@@ -145,25 +141,25 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    # 第二次筛子的数量需要与上一次得分相比
     scoreFor0, scoreFor1 = 0, 0
     while score0 < goal and score1 < goal:
         if who == 0:
-            # Calculate the nums_rolls
-            dice0 = strategy0(score0, score1)
-            if abs(dice0 - scoreFor0) == 2 and feral_hogs:
+            dice_num0 = strategy0(score0, score1)
+            if abs(scoreFor0 - dice_num0) == 2 and feral_hogs:
                 score0 += 3
-            scoreFor0 = take_turn(dice0, score1, dice)
+            scoreFor0 = take_turn(dice_num0, score1, dice)
             score0 += scoreFor0
             if is_swap(score0, score1):
                 score0, score1 = score1, score0
         else:
-            dice1 = strategy1(score1, score0)
-            if abs(dice1 - scoreFor1) == 2 and feral_hogs:
+            dice_num1 = strategy1(score1, score0)
+            if abs(scoreFor1 - dice_num1) == 2 and feral_hogs:
                 score1 += 3
-            scoreFor1 = take_turn(dice1, score0, dice)
+            scoreFor1 = take_turn(dice_num1, score0, dice)
             score1 += scoreFor1
             if is_swap(score1, score0):
-                score1, score0 = score0, score1
+                score0, score1 = score1, score0
         who = other(who)
         say = say(score0, score1)
     # END PROBLEM 5
@@ -270,7 +266,7 @@ def announce_highest(who, last_score=0, running_high=0):
             return announce_highest(who, score, current_increse)
         return announce_highest(who, score, running_high)
     return say
-        
+
     # END PROBLEM 7
 
 

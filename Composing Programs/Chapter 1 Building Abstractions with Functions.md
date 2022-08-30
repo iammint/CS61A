@@ -92,7 +92,7 @@ def false_func():
 
 ```
 
-Functions `cond()`, `true_func()`, and `false_func()` will execute before if_function.
+Functions `cond()`, `true_func()`, and `false_func()` will execute before `if_function`.
 
 # 1.3 Define new functions
 
@@ -188,8 +188,8 @@ A conditional expression has the form
 **Evaluation rule:**
 
 1. Evaluate the <predicate> expression
-2. If it's a true value, the value of the whole expression is the value of the <consequent>
-3. Otherwise, the value of the whole expression is the value of the <alternative>
+2. If it's a true value, the value of the whole expression is the value of the `<consequent>`
+3. Otherwise, the value of the whole expression is the value of the `<alternative>`
 
 ```py
 >>> x = 0

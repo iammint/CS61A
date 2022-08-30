@@ -142,18 +142,13 @@ def successor(n):
 def one(f):
     """Church numeral 1: same as successor(zero)"""
     "*** YOUR CODE HERE ***"
-    # return f(f)
-    def fx(x):
-        return f(x)
-    return fx
+    return lambda x: f(x)
     
 def two(f):
     """Church numeral 2: same as successor(successor(zero))"""
     "*** YOUR CODE HERE ***"
-    # return f(f(f))
-    def ffx(x):
-        return f(f(x))
-    return ffx
+    return lambda x: f(f(x))
+
 
 three = successor(two)
 

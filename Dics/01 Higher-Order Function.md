@@ -198,7 +198,7 @@ def print_delayed(x):
 def print_delayed(x):
     def delay_print(y):
         print(x)
-        return print_delayed
+        return print_delayed(y)
     return delay_print
 ```
 
@@ -218,3 +218,34 @@ print(yes)
 ```
 
 `yes(yes)` is a self-referencing function. 结果返回`yes`函数，接着调用`yes(no)`，由于后面还会继续调用所以无法传入`no`字符串，因此继续返回`no`函数，将'ok'字符串传入，返回'okok'
+
+# 1. Compose
+
+```py
+def compose1(func1, func2):
+    """Return a function f, such that f(x) = func1(func2(x))."""
+    def f(x):
+        return func1(func2(x))
+    return f
+```
+
+# 2. Curry
+
+```py
+def curry2(h):
+    def f(x):
+        def g(y):
+            return h(x, y)
+        return g
+    return f
+```
+
+# 3. Self-Reference
+
+```py
+def print_delayed(x):
+    def print_later(y):
+        print(x)
+        return print_delayed
+    return print_later
+```

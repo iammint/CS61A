@@ -21,6 +21,11 @@ def falling(n, k):
         n -= 1
     return ans
 
+    # Recursion
+    # if k == 0:
+    #     return 1
+    # return falling(n - 1, k - 1) * n
+
 
 def sum_digits(y):
     """Sum all the digits of y.
@@ -42,6 +47,11 @@ def sum_digits(y):
         y //= 10
     return ans
 
+    # Recursion
+    # if y < 10:
+    #     return y
+    # return sum_digits(y // 10) + sum_digits(y % 10)
+
 
 
 def double_eights(n):
@@ -60,14 +70,10 @@ def double_eights(n):
     False
     """
     "*** YOUR CODE HERE ***"
-    pre = 0
-    curr = 0
     while n > 0:
-        pre = curr
-        curr = mod(n, 10)
-        n = n // 10
-        if (pre == 8) and (curr == 8):
+        if n % 10 == 8 and n // 10 % 10 == 8:
             return True
+        n //= 10
     return False
 
 

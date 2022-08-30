@@ -54,8 +54,7 @@ def largest_factor(x):
     for num in range(2, x):
         if x % num == 0:
             return x//num
-    else:
-        return 1
+    return 1
 
 
 def if_function(condition, true_result, false_result):
@@ -126,16 +125,15 @@ def hailstone(x):
     7
     """
     "*** YOUR CODE HERE ***"
-    len = 0
+    i = 1
     while x > 1:
-        print(x)
-        len += 1
         if x % 2 == 0:
-            x = x // 2
+            x //= 2
         else:
             x = x * 3 + 1
-    print(1)
-    return (len + 1)
+        print(x)
+        i += 1
+    return i
     
 
     

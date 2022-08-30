@@ -1,4 +1,5 @@
 from cgitb import small
+from shutil import move
 
 
 HW_SOURCE_FILE=__file__
@@ -26,10 +27,9 @@ def composer(func=lambda x: x):
     """
     def fn(x):
         return func(x)
-
-    def func_adder(g):
-        "*** YOUR CODE HERE ***"
-        return composer(compose(func, g))
+    def func_adder(f):
+        return composer(compose(func, f))
+    
     return fn, func_adder
 
 
@@ -52,13 +52,10 @@ def g(n):
     True
     """
     "*** YOUR CODE HERE ***"
-    if n == 1:
-        return 1
-    if n == 2:
-        return 2
-    if n == 3:
-        return 3
+    if n <= 3:
+        return n
     return g(n - 1) + 2 * g(n - 2) + 3 * g(n - 3)
+
 
 def g_iter(n):
     """Return the value of G(n), computed iteratively.
@@ -79,28 +76,12 @@ def g_iter(n):
     True
     """
     "*** YOUR CODE HERE ***"
-    if n < 3:
+    if n <= 3:
         return n
-    i = 3
     first, second, third = 1, 2, 3
-    # while i < n:
-    #     first = third + 2 * second + 3 * first
-    #     i += 1
-    #     second = first + 2 * third + 3 * second
-    #     i += 1
-    #     third = second + 2 * first + 3 * third
-    #     i += 1
-    # if n % 3 == 1:
-    #     return first
-    # elif n % 3 == 2:
-    #     return second
-    # else:
-    #     return third
-    while n > 3:
+    for i in range(4, n + 1):
         first, second, third = second, third, third + 2 * second + 3 * first
-        n -= 1
     return third
-    
 
 
 def missing_digits(n):
@@ -168,6 +149,7 @@ def count_change(total):
     return change_helper(total, 1)
 
 
+
 def print_move(origin, destination):
     """Print instructions to move a disk."""
     print("Move the top disk from rod", origin, "to rod", destination)
@@ -201,6 +183,12 @@ def move_stack(n, start, end):
     """
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
+    if n == 1:
+        print_move(start, end)
+        return
+    move_stack(n - 1, start, 6 - start - end)
+    move_stack(1, start, end)
+    move_stack(n - 1, 6 - start - end, end)
 
 
 from operator import sub, mul
