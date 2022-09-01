@@ -45,7 +45,14 @@ unique factors: 1 and itself.
 
 ```py
 def is_prime(n):
-
+    def factor_num(x):
+        if x == 1:
+            return 1
+        elif n % x == 0:
+            return 1 + factor_num(x - 1)
+        else:
+            return factor_num(x - 1)
+    return factor_num(n) == 2
 ```
 
 # 1. Mutual Recursion
@@ -251,7 +258,27 @@ def all_nums(k):
 all_nums(3)
 ```
 
-## Implementing Functions
+## Take steps
+
+You want to go up a flight of stairs that has `n` steps. You can either take 1 or 2 steps each time. How many different ways can you go up this flight of stairs? Write a function `count_stair_ways` that solves this problem. Assume `n` is positive.
+
+```py
+def count_stair_ways(n):
+    if n == 1:
+        return 1
+    elif n == 2:
+        return 2
+    return count_stair_ways(n - 1) + count_stair_ways(n - 2)
+```
+
+Now instead of taking 1 or 2 steps, we are able to take up to and including `k` steps at a time.
+Write a function `count_k` that figures out the number of paths for this scenario. Assume `n` and `k` are positive.
+
+```py
+
+```
+
+# 5. Implementing Functions
 
 1. Read the description
 2. Verify the examples & pick a simple one

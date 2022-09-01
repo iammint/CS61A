@@ -191,12 +191,80 @@ def select(p, i):
     """Return the element at index i of pair p."""
     return p(i)
 ```
+
 With this implementation, we can create and manipulate pairs.
 
-```py 
+```py
 >>> p = pair(20, 14)
 >>> select(p, 0)
 20
 >>> select(p, 1)
 14
 ```
+
+# 2.3 Sequences
+
+## 1. Lists
+
+Lists can be added together and multiplied by integers.
+
+```py
+list = [1, 2, 3, 4]
+>>> [7, 8] + list * 2
+[7, 8, 1, 2, 3, 4, 1, 2, 3, 4]
+```
+
+## 2. Higher-order Function
+
+The common patterns we have observed in sequence processing can be expressed using higher-order functions. First, evaluating an expression for each element in a sequence can be expressed by applying a function to each element.
+
+```py
+def map_all(map_fn, s):
+    return [map_fn(x) for x in s]
+
+def filter_all(filter_fn, s):
+    return [x for x in s if filter_fn(x)]
+
+def reduce(reduce_fn, s, initial):
+    reduced = initial
+    for x in s:
+        reduced = reduce_fn(reduced, x)
+    return reduced
+>>> reduce(mul, [1, 2, 3], 1)
+6
+
+def divisors_of(n):
+    return filter_all(lambda x: n % x == 0, range(2, n))
+```
+
+## 3. Sequence Abstraction
+
+## Slicing Notation
+
+> In Python, sequence slicing is expressed similarly to element selection, using square brackets. A colon separates the starting and ending indices. Any bound that is omitted is assumed to be an extreme value: 0 for the starting index, and the length of the sequence for the ending index.
+
+```py
+a[start:stop:step] # start through not past stop, by step
+```
+
+- a[start:stop] # items start through stop-1
+- a[start:] # items start through the rest of the array
+- a[:stop] # items from the beginning through stop-1
+- a[:] # a copy of the whole array
+
+- a[-1] # last item in the array
+- a[-2:] # last two items in the array
+- a[:-2] # everything except the last two items
+
+- a[::-1] # all items in the array, reversed
+- a[1::-1] # the first two items, reversed
+- a[:-3:-1] # the last two items, reversed
+- a[-3::-1] # everything except the last two items, reversed
+
+## Partition Trees
+
+Trees can also be used to represent the partitions of an integer. A partition tree for n using parts up to size m is a binary (two branch) tree that represents the choices taken during computation. In a non-leaf partition tree:
+
+- the left (index 0) branch contains all ways of partitioning n using at least one m,
+- the right (index 1) branch contains partitions using parts up to m-1, and
+- the root label is m.
