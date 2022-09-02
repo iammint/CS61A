@@ -261,10 +261,184 @@ a[start:stop:step] # start through not past stop, by step
 - a[:-3:-1] # the last two items, reversed
 - a[-3::-1] # everything except the last two items, reversed
 
-## Partition Trees
+## Write function1
 
-Trees can also be used to represent the partitions of an integer. A partition tree for n using parts up to size m is a binary (two branch) tree that represents the choices taken during computation. In a non-leaf partition tree:
+Write a function that takes a list s and returns a new list that keeps only the even-indexed elements of s and multiplies them by their corresponding index.
 
-- the left (index 0) branch contains all ways of partitioning n using at least one m,
-- the right (index 1) branch contains partitions using parts up to m-1, and
-- the root label is m.
+```py
+def even_weighted(list):
+    return [i * list[i] for i in range(len(list)) if i % 2 == 0]
+
+```
+
+## Write function2
+
+Write a function that takes in a list and returns the maximum product that can be formed using nonconsecutive elements of the list. The input list will contain only numbers greater than or equal to 1.
+
+```py
+def max_product(s):
+    """Return the maximum product that can be formed using non-consecutive
+    elements of s.
+    >>> max_product([10,3,1,9,2]) # 10 * 9
+    90
+    >>> max_product([5,10,5,10,5]) # 5 * 5 * 5
+    125
+    >>> max_product([])
+    1
+    """
+def max_product(s):
+    if len(s) == 0:
+        return 1
+    elif len(s) == 1:
+        return s[0]
+    return max(max_product(s[1:]), s[0] * max_product(s[2:]))
+```
+
+## Write function3
+
+A hole number is a number in which every other digit dips below the digits immediately adjacent to it. For example, the number 968 would be considered a hole number because the number 6 is smaller than both of its surrounding digits. Other hole numbers include 9192959 or 324364989. The number 544 would not be considered a hole number. For simplicity assume that we only pass in numbers that have an odd number of digits. Define the following function so that it properly identifies hole numbers
+
+```py
+def check_hole_number(n):
+    if n // 10 == 0:
+        return True
+    return check_hole_number(n // 100) and (n // 10 % 10 < n % 10) and (n // 10 % 10 < n // 100 % 10)
+```
+
+## Write function4
+
+Define the following function so that it properly identifies mountain numbers. A mountain number is a
+number that either
+
+1. has digits that strictly decrease from right to left OR strictly increase from right to left
+2. has digits that increase from right to left up to some point in the middle of the number (not necessarily the exact middle digit). After reaching the maximum digit, the digits to the left of the maximum digit should strictly decrease.
+
+```py
+def check_mountain_number(n):
+    """
+    >>> check_mountain_number(103)
+    False
+    >>> check_mountain_number(153)
+    True
+    >>> check_mountain_number(123456)
+    True
+    >>> check_mountain_number(2345986)
+    True
+    """
+    def helper(x, is_full_mountain):
+        if x // 10 == 0:
+            return True
+        if is_full_mountain and x % 10 < x // 10 % 10:
+            return helper(x // 10, is_full_mountain)
+        return x % 10 > x // 10 % 10 and helper(x // 10, False)
+    return helper(n, True)
+```
+
+# 2.4 Trees
+
+Our ability to use lists as the elements of other lists provides a new means of combination in our programming language. This ability is called a `closure` property of a data type.
+
+Nesting lists within lists can introduce complexity. The tree is a fundamental data abstraction that imposes regularity on how hierarchical values are structured and manipulated.
+
+- `root`: the node at the top of the tree
+- `label`: the value in a node, selected by the label function
+- `branches`: a list of trees directly under the tree's root, selected by the branches function
+- `leaf`: a tree with zero branches
+- `node`: any location within the tree (e.g., root node, leaf nodes, etc.)
+
+The data abstraction for a tree consists of the `constructor` tree and the `selectors` label and branches. We begin with a simplified version.
+
+```py
+def tree(root_label, branches=[]):
+    for branch in branches:
+        assert is_tree(branch), 'branches must be trees'
+        return [root] + list(branches)
+
+def label(tree):
+    return tree[0]
+
+def branches(tree):
+    return tree[1:]
+
+def is_tree(tree):
+    if type(tree) != list or len(tree) < 1:
+        return False
+    for branch in branches(tree):
+        if not is_tree(branch):
+            return False
+    return True
+
+def is_leaf(tree):
+    return not branches(tree)
+```
+
+Trees can be constructed by nested expressions. The following tree t has root label 3 and two branches.
+
+```py
+>>> t = tree(3, [tree(1), tree(2, [tree(1), tree(1)])])
+>>> t
+[3, [1], [2, [1], [1]]]
+>>> label(t)
+3
+>>> branches(t)
+[[1], [2, [1], [1]]]
+>>> label(branches(t)[1])
+2
+>>> is_leaf(t)
+False
+>>> is_leaf(branches(t)[0])
+True
+```
+
+## Example1: fib_tree
+
+```py
+def fib_tree(n):
+    if n <= 1:
+        return tree(n)
+    left, right = fib_tree(n - 2), fib_tree(n - 1)
+    fib_n = label(left) + label(right)
+    return fib_tree(fib_n, [left, right])
+
+>>> fib_tree(5)
+[5, [2, [1], [1, [0], [1]]], [3, [1, [0], [1]], [2, [1], [1, [0], [1]]]]]
+```
+
+## Example2: count_leaves
+
+```py
+def count_leaves(tree):
+    if is_leaf(tree):
+        return 1
+    else:
+        return sum([count_leaves(b) for b in branches(tree)])
+```
+
+## Example3: leaves
+
+Implement `leaves`, which returns a list of the leaf labels of a tree.
+
+Hint: If you **sum** a list of lists, you get a list containing the elements of those lists.
+
+```py
+>>> sum([[1], [2, 3], [4]], [])
+[1, 2, 3, 4]
+>>> sum([[1]], [])
+[1]
+>>> sum([[[1]], [2]], [])
+[[1], 2]
+```
+
+```py
+def leaves(tree):
+    """Return a list containing the leaf labels of tree
+    >>> leaves(fib_tree(5))
+    [1, 0, 1, 0, 1, 1, 0, 1]
+    """
+    if is_leaf(fib_tree(5)):
+        return [label(tree)]
+    else:
+        return sum(leaves(b) for b in branches(tree),[])
+```
+
+# 5. Partition tree

@@ -275,7 +275,18 @@ Now instead of taking 1 or 2 steps, we are able to take up to and including `k` 
 Write a function `count_k` that figures out the number of paths for this scenario. Assume `n` and `k` are positive.
 
 ```py
-
+def count_k(n, k):
+    if n == 0:
+        return 1
+    elif n < 0:
+        return 0
+    else:
+        total = 0
+        i = 1
+        while i <= k:
+            total += count_k(n - i, k)
+            i += 1
+        return total
 ```
 
 # 5. Implementing Functions
