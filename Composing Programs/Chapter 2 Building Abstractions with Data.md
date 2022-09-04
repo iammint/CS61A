@@ -286,7 +286,6 @@ def max_product(s):
     >>> max_product([])
     1
     """
-def max_product(s):
     if len(s) == 0:
         return 1
     elif len(s) == 1:
@@ -352,7 +351,7 @@ The data abstraction for a tree consists of the `constructor` tree and the `sele
 def tree(root_label, branches=[]):
     for branch in branches:
         assert is_tree(branch), 'branches must be trees'
-        return [root] + list(branches)
+        return [root_label] + list(branches)
 
 def label(tree):
     return tree[0]
@@ -439,6 +438,35 @@ def leaves(tree):
         return [label(tree)]
     else:
         return sum(leaves(b) for b in branches(tree),[])
+```
+
+## Example4: Creating leaves
+
+```py
+def increment_leaves(t):
+    """Return a tree like t but leaf labels incremented."""
+    if is_leaf(t):
+        return tree(label(t) + 1)
+    else:
+        bs = [increment_leaves(b) for b in branches(t)]
+        return tree(label(t), bs)
+```
+
+## Example5: increment
+
+```py
+def increment(t):
+    """Return a tree like t but with all labels incremented."""
+    return tree(label(t) + 1, [increment(b) for b in branches(t)])
+```
+
+## Example6: print_tree
+
+```py
+def print_tree(t, indent=0):
+    print('  ' * indent + str(label(t)))
+    for b in branches(t):
+        print(b, indent + 1)
 ```
 
 # 5. Partition tree

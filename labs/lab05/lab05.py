@@ -40,6 +40,14 @@ def berry_finder(t):
     True
     """
     "*** YOUR CODE HERE ***"
+    if str(label(t)) == 'berry':
+      return True
+    else:
+      for b in branches(t):
+        if berry_finder(b):
+          return True
+      return False
+
 
 
 def sprout_leaves(t, leaves):
@@ -65,7 +73,7 @@ def sprout_leaves(t, leaves):
     >>> print_tree(t2)
     1
       2
-        3
+        3 
     >>> new2 = sprout_leaves(t2, [6, 1, 2])
     >>> print_tree(new2)
     1
@@ -76,6 +84,11 @@ def sprout_leaves(t, leaves):
           2
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+      return tree(t, leaves)
+    else:
+      bs = [sprout_leaves(b) for b in branches(t)]
+      return tree(label(t), bs)
 
 # Abstraction tests for sprout_leaves and berry_finder
 def check_abstraction():
@@ -162,6 +175,19 @@ def add_trees(t1, t2):
       5
     """
     "*** YOUR CODE HERE ***"
+    if is_tree(t1) and not is_tree(t2):
+      return copy_tree(t1)
+    elif is_tree(t2) and not is_tree(t1):
+      return copy_tree(t2)
+    else:
+      l1 = len(branches(t1))
+      l2 = len(branches(t2))
+      branch = list(zip(branches(t1), branches(t2)))
+      if l1 < l2:
+        branch += [(None, b) for b in branches(t2)[l1:]]
+      elif l2 < l1:
+        branch += [(b, None) for b in branches(t1)[l2:]]
+      return tree(label(t1) + label(t2), [add_trees(i[0], i[1]) for i in branch])
 
 
 def build_successors_table(tokens):
@@ -183,7 +209,9 @@ def build_successors_table(tokens):
     for word in tokens:
         if prev not in table:
             "*** YOUR CODE HERE ***"
+            table[prev] = []
         "*** YOUR CODE HERE ***"
+        table[prev].append(word)
         prev = word
     return table
 
@@ -201,6 +229,8 @@ def construct_sent(word, table):
     result = ''
     while word not in ['.', '!', '?']:
         "*** YOUR CODE HERE ***"
+        result += word + ' '
+        word = random.choice(table[word])
     return result.strip() + word
 
 def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com/shakespeare.txt'):

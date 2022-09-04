@@ -1,3 +1,6 @@
+from operator import le
+
+
 HW_SOURCE_FILE=__file__
 
 
@@ -44,11 +47,13 @@ def planet(size):
     """Construct a planet of some size."""
     assert size > 0
     "*** YOUR CODE HERE ***"
+    return ["planet", size]
 
 def size(w):
     """Select the size of a planet."""
     assert is_planet(w), 'must call size on a planet'
     "*** YOUR CODE HERE ***"
+    return w[1]
 
 def is_planet(w):
     """Whether w is a planet."""
@@ -105,6 +110,12 @@ def balanced(m):
     True
     """
     "*** YOUR CODE HERE ***"
+    if is_planet(m):
+        return True
+    else:
+        leftNode = end(left(m))
+        rightNode = end(right(m))
+        return length(left(m)) * total_weight(leftNode) == length(right(m)) * total_weight(rightNode) and balanced(leftNode) and balanced(rightNode)
 
 def totals_tree(m):
     """Return a tree representing the mobile with its total weight at the root.
@@ -136,6 +147,12 @@ def totals_tree(m):
     True
     """
     "*** YOUR CODE HERE ***"
+    if is_planet(m):
+        return tree(total_weight(m))
+    else:
+        leftNode = end(left(m))
+        rightNode = end(right(m))
+        return tree(total_weight(m), [totals_tree(leftNode), totals_tree(rightNode)])
 
 
 def replace_leaf(t, find_value, replace_value):
@@ -168,6 +185,10 @@ def replace_leaf(t, find_value, replace_value):
     True
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return tree(replace_value if label(t) == find_value else label(t))
+    return tree(label(t), [replace_leaf(b, find_value, replace_value) for b in branches(t)])
+
 
 
 def preorder(t):
@@ -181,6 +202,14 @@ def preorder(t):
     [2, 4, 6]
     """
     "*** YOUR CODE HERE ***"
+    def helper(tree, list):
+        if not is_tree(tree):
+            return
+        list.append(label(tree))
+        for b in branches(tree):
+            helper(b, list)
+        return list 
+    return helper(t, [])
 
 
 def has_path(t, phrase):
@@ -213,6 +242,15 @@ def has_path(t, phrase):
     """
     assert len(phrase) > 0, 'no path for empty phrases.'
     "*** YOUR CODE HERE ***"
+    if label(t) != phrase[0]:
+        return False
+    elif len(phrase) == 1:
+        return True
+    for b in branches(t):
+        # It will run till the end to assure it's True
+        if has_path(b, phrase[1:]):
+            return True
+    return False
 
 
 def interval(a, b):
@@ -222,10 +260,12 @@ def interval(a, b):
 def lower_bound(x):
     """Return the lower bound of interval x."""
     "*** YOUR CODE HERE ***"
+    return x[0]
 
 def upper_bound(x):
     """Return the upper bound of interval x."""
     "*** YOUR CODE HERE ***"
+    return x[1]
 def str_interval(x):
     """Return a string representation of interval x.
     """
@@ -251,6 +291,11 @@ def sub_interval(x, y):
     """Return the interval that contains the difference between any value in x
     and any value in y."""
     "*** YOUR CODE HERE ***"
+    s1 = x[0] - y[0]
+    s2 = x[0] - y[1]
+    s3 = x[1] - y[0]
+    s4 = x[1] - y[1]
+    return [min(s1, s2, s3, s4), max(s1, s2, s3, s4)]
 
 
 def div_interval(x, y):
@@ -258,6 +303,7 @@ def div_interval(x, y):
     any value in y. Division is implemented as the multiplication of x by the
     reciprocal of y."""
     "*** YOUR CODE HERE ***"
+    assert (upper_bound(y) * lower_bound(y) > 0)
     reciprocal_y = interval(1/upper_bound(y), 1/lower_bound(y))
     return mul_interval(x, reciprocal_y)
 
@@ -276,6 +322,14 @@ def quadratic(x, a, b, c):
     '0 to 10'
     """
     "*** YOUR CODE HERE ***"
+    def f(x):
+        return a * x * x + b * x + c
+    lower_x, upper_x, point_x = lower_bound(x), upper_bound(x), - b / (2 * a)
+    lower_y, upper_y, point_y = f(lower_x), f(upper_x), f(point_x)
+    if lower_x < point_x < upper_x:
+        return interval(min(lower_y, upper_y, point_y), max(lower_y, upper_y, point_y))
+    return interval(min(lower_y, upper_y), max(lower_y, upper_y))
+    
 
 
 def par1(r1, r2):
@@ -295,8 +349,8 @@ def check_par():
     >>> lower_bound(x) != lower_bound(y) or upper_bound(x) != upper_bound(y)
     True
     """
-    r1 = interval(1, 1) # Replace this line!
-    r2 = interval(1, 1) # Replace this line!
+    r1 = interval(1, 100000) # Replace this line!
+    r2 = interval(1, 100000) # Replace this line!
     return r1, r2
 
 
