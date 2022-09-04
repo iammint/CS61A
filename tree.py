@@ -45,8 +45,26 @@ def increment(t):
     """Return a tree like t but with all labels incremented."""
     return tree(label(t) + 1, [increment(b) for b in branches(t)])
 
+
 def print_tree(t, indent=0):
     print('  ' * indent + str(label(t)))
     for b in branches(t):
         print_tree(b, indent + 1)
 
+def partition_tree(n, m):
+        """Return a partition tree of n using parts of up to m."""
+        if n == 0:
+            return tree(True)
+        elif n < 0 or m == 0:
+            return tree(False)
+        else:
+            left = partition_tree(n-m, m)
+            right = partition_tree(n, m-1)
+            return tree(m, [left, right])
+
+def right_binarize(tree):
+    if is_leaf(tree):
+        return tree
+    if len(tree) > 2:
+        tree = [tree[0], tree[1:]]
+    return [right_binarize(b) for b in tree]

@@ -469,4 +469,57 @@ def print_tree(t, indent=0):
         print(b, indent + 1)
 ```
 
-# 5. Partition tree
+## 1. Partition tree
+
+> Trees can also be used to represent the partitions of an integer.
+
+A partition tree for n using parts up to size m is a binary (two branch) tree that represents the choices taken during computation. In a non-leaf partition tree:
+
+- the left (index 0) branch contains all ways of partitioning `n` using at least one `m`,
+- the right (index 1) branch contains partitions using parts up to `m-1`, and
+- the root label is `m`.
+
+```py
+def partition_tree(n, m):
+        """Return a partition tree of n using parts of up to m."""
+        if n == 0:
+            return tree(True)
+        elif n < 0 or m == 0:
+            return tree(False)
+        else:
+            left = partition_tree(n-m, m)
+            right = partition_tree(n, m-1)
+            return tree(m, [left, right])
+```
+
+Printing the partitions from a partition tree is another tree-recursive process that traverses the tree, constructing each partition as a list. Whenever a `True` leaf is reached, the partition is printed.
+
+```py
+def print_parts(tree, partition=[]):
+        if is_leaf(tree):
+            if label(tree):
+                print(' + '.join(partition))
+        else:
+            left, right = branches(tree)
+            m = str(label(tree))
+            print_parts(left, partition + [m])
+            print_parts(right, partition)
+```
+
+## Tree Slicing
+
+Slicing can be used on the branches of a tree as well. For example, we may want to place a restriction on the number of branches in a tree. A binary tree is either a leaf or a sequence of at most two binary trees. A common tree transformation called `binarization` computes a binary tree from an original tree by grouping together adjacent branches.
+
+```py
+def right_binarize(tree):
+    """Construct a right-branching binary tree."""
+    if is_leaf(tree):
+        return tree
+    if len(tree) > 2:
+        tree = [tree[0], tree[1:]]
+    return [right_binarize(b) for b in tree]
+>>> right_binarize([1, 2, 3, 4, 5, 6, 7])
+[1, [2, [3, [4, [5, [6, 7]]]]]]
+```
+
+
