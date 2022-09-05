@@ -1,3 +1,6 @@
+from tkinter import HORIZONTAL
+
+
 def tree(root_labels, branches=[]):
     return [root_labels] + list(branches)
 
@@ -68,3 +71,28 @@ def right_binarize(tree):
     if len(tree) > 2:
         tree = [tree[0], tree[1:]]
     return [right_binarize(b) for b in tree]
+
+
+def height(t):
+    if is_leaf(t):
+        return 0
+    return 1 + max([height(b) for b in branches(t)])
+
+
+def square_tree(t):
+    return tree(label(t) ** 2, [square_tree(b) for b in branches(t)])
+    
+
+def find_path(tree, x):
+    """
+    >>> t = tree(2, [tree(7, [tree(3), tree(6, [tree(5), tree(11)])] ), tree(15)])
+    >>> find_path(t, 5)
+    [2, 7, 6, 5]
+    >>> find_path(t, 10) # returns None
+    """
+    if label(tree) == x:
+        return [x]
+    for b in branches(tree):
+        path = find_path(b, x)
+        if path:
+            return [label(tree)] + path
