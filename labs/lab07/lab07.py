@@ -19,8 +19,18 @@ def subseqs(s):
     >>> subseqs([])
     [[]]
     """
-
-
+    if s == []:
+        return [[]]
+    # include first element
+    # [1], [1, 2], [1, 3], [1, 2, 3]
+    # call insert_into_all onto first element, case where we exclude
+    # exclude first element
+    # [], [2], [3], [2, 3]
+    # recursively call subseqs(s[1:])
+    else:
+        subset = subseqs(s[1:])
+        return subset + insert_into_all(s[0], subset)
+    
 
 def inc_subseqs(s):
     """Assuming that S is a list, return a nested list of all subsequences
@@ -38,14 +48,14 @@ def inc_subseqs(s):
     """
     def subseq_helper(s, prev):
         if not s:
-            return ____________________
+            return [[]]
         elif s[0] < prev:
-            return ____________________
+            return subseq_helper(s[1:], prev)
         else:
-            a = ______________________
-            b = ______________________
-            return insert_into_all(________, ______________) + ________________
-    return subseq_helper(____, ____)
+            a = subseq_helper(s[1:], s[0]) # include
+            b = subseq_helper(s[1:], prev) # exclude
+            return insert_into_all(s[0], a) + b
+    return subseq_helper(s, 0)
 
 
 def trade(first, second):
@@ -77,9 +87,9 @@ def trade(first, second):
     """
     m, n = 1, 1
 
-    equal_prefix = lambda: ______________________
-    while _______________________________:
-        if __________________:
+    equal_prefix = lambda: sum(first[:m]) == sum(second[:n])
+    while first[m:] and second[m:] and not equal_prefix():
+        if sum(first[:m]) < sum(second[:n]):
             m += 1
         else:
             n += 1
@@ -104,6 +114,10 @@ def reverse(lst):
     [-8, 72, 42]
     """
     "*** YOUR CODE HERE ***"
+    copy_lst = lst[:]
+    for i in range(len(lst)):
+        lst[i] = copy_lst[len(lst) - 1 - i]
+    
 
 
 cs61a = {
@@ -131,6 +145,13 @@ def make_glookup(class_assignments):
     0.8913043478260869
     """
     "*** YOUR CODE HERE ***"
+    total, got = 0, 0
+    def calculate(hmw, grade):
+        nonlocal total, got
+        total += class_assignments[hmw]
+        got += grade
+        return got / total
+    return calculate
 
 
 def num_trees(n):
@@ -153,10 +174,9 @@ def num_trees(n):
     429
 
     """
-    if ____________________:
-        return _______________
-    return _______________
-
+    if n == 1 or n == 2:
+        return 1
+    return num_trees(n - 1) * 2 * (2 * n - 3) // n
 
 def make_advanced_counter_maker():
     """Makes a function that makes counters that understands the
@@ -187,13 +207,22 @@ def make_advanced_counter_maker():
     >>> tom_counter('global-count')
     1
     """
-    ________________
-    def ____________(__________):
-        ________________
-        def ____________(__________):
-            ________________
+    global_count = 0
+    def make_counter():
+        own_count = 0
+        def whose_counter(which_count):
+            nonlocal global_count, own_count
             "*** YOUR CODE HERE ***"
-            # as many lines as you want
-        ________________
-    ________________
+            if which_count == 'count':
+                own_count += 1
+                return own_count
+            elif which_count == 'reset':
+                own_count = 0
+            elif which_count == 'global-count':
+                global_count += 1
+                return global_count
+            elif which_count == 'global-reset':
+                global_count = 0
+        return whose_counter
+    return make_counter
 
