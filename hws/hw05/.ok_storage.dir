@@ -2,3 +2,4 @@
 'make_withdraw-correct', (512, 66)
 'repeated-correct', (1024, 66)
 'merge-correct', (1536, 66)
+'make_joint-correct', (2048, 66)

@@ -1,9 +1,3 @@
-from ast import YieldFrom
-from email import iterators
-from math import nextafter
-from time import time
-from tkinter.tix import Y_REGION
-
 
 def make_bank(balance):
     """Returns a bank function with a starting balance. Supports
@@ -200,6 +194,17 @@ def make_joint(withdraw, old_pass, new_pass):
     "Too many incorrect attempts. Attempts: ['my', 'secret', 'password']"
     """
     "*** YOUR CODE HERE ***"
+    # 先判断银行卡是否已经锁死或余额不足
+    old_pass_verify = withdraw(0, old_pass)
+    if type(old_pass_verify) == str:
+        return old_pass_verify
+    # 将新密码与旧密码存到数组中
+    both_pass = [old_pass, new_pass]
+    def new_withdraw(amount, input):
+        return withdraw(amount, old_pass) if input in both_pass else withdraw(amount, input)
+    return new_withdraw
+
+
 
 
 def remainders_generator(m):
