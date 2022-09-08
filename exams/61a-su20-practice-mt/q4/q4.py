@@ -20,7 +20,7 @@ def sums(n, k):
         return [[n]]
     y = []
     for x in range(1, n):
-        y.extend([s + [x] for s in sums(n - x, k - 1)])
+        y.extend([s + [x] for s in sums(n-x, k-1)])
     return y
 
 # ORIGINAL SKELETON FOLLOWS

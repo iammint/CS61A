@@ -27,20 +27,18 @@ def cat(password, limit):
     >>> hacker(2) # correct attempt to gain access
     'Successfully unlocked!'
     """
-    ______
-    ______
+    num_attempt, index = 0, 0
     def attempt(digit):
-        ______
-        ______
-        if ______:
-            return ______
-        if ______:
-            ______
-            if ______:
-                return ______
+        nonlocal num_attempt, index
+        if num_attempt >= limit:
+            return 'The safe is now inaccessible!'
+        if digit == password[index]:
+            index += 1
+            if index == len(password):
+                return 'Successfully unlocked!'
         else:
-            ______
-    return ______
+            num_attempt += 1
+    return attempt
 
 # ORIGINAL SKELETON FOLLOWS
 
