@@ -522,4 +522,82 @@ def right_binarize(tree):
 [1, [2, [3, [4, [5, [6, 7]]]]]]
 ```
 
+# 2.5 Obejct-Oriented Programming
 
+> Object-oriented programming (OOP) is a method for organizing programs that brings together many of the ideas introduced in this chapter.
+
+## 1. Objects and classes
+
+> A class serves as a template for all objects whose type is that class. Every object is an instance of some particular class.
+
+```py
+class Account:
+    def __init__(self, account_holder):
+        self.balance = 0
+        self.holder = account_holder
+    def deposit(self, amount):
+        self.balance = self.balance + amount
+        return self.balance
+    def withdraw(self, amount):
+        if amount > self.balance:
+            return 'Insufficient funds'
+        self.balance = self.balance - amount
+        return self.balance
+```
+
+## 2. Functions and Methods
+
+Python distinguishes between functions and methods.
+
+Bound methods couple together a function and the object on which that method will be invoked.
+
+- Object + Function = Bound Method
+
+```py
+>>> type(Account.deposit)
+<class 'function'>
+>>> type(tom_account.deposit)
+<class 'method'>
+
+>>> Account.deposit(tom_account, 100)
+100
+>>> tom_account.deposit(100)
+200
+```
+
+## 3. Inheritance
+
+Instance attributes are found before class attributes; class attributes are inherited.
+
+```py
+class Worker:
+    greeting = 'Sir'
+    def __init__(self):
+        self.elf = Worker
+    def work(self):
+        return self.greeting + ', I work'
+    def __repr__(self):
+        return Bourgeoisie.greeting
+
+class Bourgeoisie(Worker):
+    greeting = 'Peon'
+    def work(self):
+        print(Worker.work(self))
+        return 'I gather wealth'
+
+jack = Worker()
+john = Bourgeoisie()
+jack.greeting = 'Maam'
+
+>>> Worker.work()
+'Sir, I work'
+>>> jack
+Peon
+>>> jack.work()
+'Maam, I work'
+>>> john.work()
+Peon, I work
+'I gather wealth'
+>>> john.elf.work(john)
+'Peon, I work'
+```

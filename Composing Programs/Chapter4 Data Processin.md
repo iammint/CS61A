@@ -120,7 +120,7 @@ try:
         pass
 ```
 
-# 4. Generators
+# 4.5 Generators
 
 > A generator is a special kind of iterator. Generator functions are distinguished from regular functions in that rather than containing `return` statements in their body, they use `yield` statement to return elements of a series.
 
@@ -147,7 +147,7 @@ letters.__next__()
 # b
 ```
 
-# 5. Generators can yield from iterators
+# 4.6 Generators can yield from iterators
 
 > A `yield from` statement yields all values from an iterator or iterable.
 
