@@ -1,5 +1,6 @@
 # Magic the Lambda-ing!
 
+from curses import nonl
 import random
 
 class Card:
@@ -23,6 +24,9 @@ class Card:
         500
         """
         "*** YOUR CODE HERE ***"
+        self.name = name
+        self.attack = attack
+        self.defense = defense
 
     def power(self, other_card):
         """
@@ -42,6 +46,7 @@ class Card:
         50.0
         """
         "*** YOUR CODE HERE ***"
+        return self.attack - other_card.defense / 2
 
 
     def effect(self, other_card, player, opponent):
@@ -80,6 +85,10 @@ class Player:
         self.deck = deck
         self.name = name
         "*** YOUR CODE HERE ***"
+        decks = []
+        for i in range(5):
+            decks.append(deck.draw())
+        self.hand = decks
 
     def draw(self):
         """Draw a card from the player's deck and add it to their hand.
@@ -94,6 +103,7 @@ class Player:
         """
         assert not self.deck.is_empty(), 'Deck is empty!'
         "*** YOUR CODE HERE ***"
+        self.hand.append(deck.draw())
 
     def play(self, card_index):
         """Remove and return a card from the player's hand at the given index.

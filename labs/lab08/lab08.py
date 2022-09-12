@@ -1,7 +1,8 @@
+
 def make_generators_generator(g):
     """Generates all the "sub"-generators of the generator returned by
     the generator function g.
-
+    Returns a generator that yields generator 
     >>> def every_m_ints_to(n, m):
     ...     i = 0
     ...     while (i <= n):
@@ -34,4 +35,12 @@ def make_generators_generator(g):
     """
     "*** YOUR CODE HERE ***"
     lst = list(g())
-    
+    def fn(counter):
+        new_iter = iter(lst)
+        for i in range(counter): 
+            yield next(new_iter)
+    counter = 1
+    while counter <= len(lst):
+        yield fn(counter) 
+        counter += 1
+
