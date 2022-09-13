@@ -47,6 +47,14 @@ The iterator abstraction has two components:
 No more values
 ```
 
+Once an iterator has returned all the values in an `iterable`, subsequent calls to next
+on that iterable will result in a `StopIteration` exception. In order to be able to
+access the values in the iterable a second time, you would have to create a second
+iterator.
+
+Iterators are also iterables, that is, calling iter on them will return
+an iterator. However, calling `iter` on most iterators will not create a new iterator - instead, it will simply return the same iterator.
+
 # 4.2 Iterables 可迭代对象
 
 > Any value that can produce iterators is called an iterable value.
@@ -54,6 +62,11 @@ No more values
 In Python, an iterable value is anything that can be passed to the built-in iter function. Iterables include sequence values such as `strings` and `tuples`, as well as other containers such as `sets` and `dictionaries`. `Iterators` are also iterables, because they can be passed to the iter function.
 
 If a dictionary changes in structure because a key is added or removed, then all iterators become invalid and future iterators may exhibit arbitrary changes to the order their contents. On the other hand, changing the value of an existing key does not change the order of the contents or invalidate iterators.
+
+|      iterable      |              iterator              |
+| :----------------: | :--------------------------------: |
+|     可迭代对象     | 可迭代对象的迭代器：iter(iterable) |
+| 包含需要迭代的数据 |          记录数据中的顺序          |
 
 # 4.3 Built-in Iterators
 
@@ -124,6 +137,10 @@ try:
 
 > A generator is a special kind of iterator. Generator functions are distinguished from regular functions in that rather than containing `return` statements in their body, they use `yield` statement to return elements of a series.
 
+|             iterator             |               generator               |
+| :------------------------------: | :-----------------------------------: |
+| 通过`iter(iterable)`产生的迭代器 | 使用`for/while循环+yield`产生的迭代器 |
+
 ```py
 def letters_generator():
     current = 'a'
@@ -147,7 +164,53 @@ letters.__next__()
 # b
 ```
 
-# 4.6 Generators can yield from iterators
+## Exercise 1
+
+Write a generator function generate_subsets that returns all subsets of the positive
+integers from 1 to n. Each call to this generator's next method will return a list of
+subsets of the set [1, 2, ..., n], where n is the number of previous calls to next.
+
+```py
+def generate_subsets():
+    """
+    >>> subsets = generate_subsets()
+    >>> for _ in range(3):
+    ... print(next(subsets))
+    ...
+    [[]]
+    [[], [1]]
+    [[], [1], [2], [1, 2]]
+    """
+    subsets = [[]]
+    n = 1
+    while True:
+        yield subsets
+        subsets = subsets + [s + [n] for s in subsets]
+        n += 1
+```
+
+## Exercise 2
+
+Implement sum paths gen, which takes in a tree t and and returns a generator which yields the sum of all the nodes from a path from the root of a tree to a leaf. You may yield the sums in any order.
+
+```py
+def sum_paths_gen(t):
+    """
+    >>> t1 = tree(5)
+    >>> next(sum_paths_gen(t1))
+    5
+    >>> t2 = tree(1, [tree(2, [tree(3), tree(4)]), tree(9)])
+    >>> sorted(sum_paths_gen(t2))
+    [6, 7, 10]
+    """
+    if is_leaf(t):
+        yield label(t)
+    for b in branches(t):
+        for s in sum_paths_gen(b):
+            yield s + label(t)
+```
+
+# 4.6 Generators can `yield from` iterators
 
 > A `yield from` statement yields all values from an iterator or iterable.
 

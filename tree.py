@@ -96,3 +96,23 @@ def find_path(tree, x):
         path = find_path(b, x)
         if path:
             return [label(tree)] + path
+
+# Implement sum paths gen, which takes in a tree t and and returns a generator which
+# yields the sum of all the nodes from a path from the root of a tree to a leaf.
+# You may yield the sums in any order.
+def sum_paths_gen(t):
+    """
+    >>> t1 = tree(5)
+    >>> next(sum_paths_gen(t1))
+    5
+    >>> t2 = tree(1, [tree(2, [tree(3), tree(4)]), tree(9)])
+    >>> sorted(sum_paths_gen(t2))
+    [6, 7, 10]
+    """
+    if is_leaf(t):
+        yield label(t)
+    for b in branches(t):
+        for s in sum_paths_gen(b):
+            yield s + label(t)
+
+
