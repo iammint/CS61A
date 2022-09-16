@@ -1,4 +1,9 @@
 
+from distutils.command.bdist_msi import bdist_msi
+from gettext import lngettext
+from locale import currency
+
+
 passphrase = '*** PASSPHRASE HERE ***'
 
 
@@ -38,7 +43,6 @@ class VendingMachine:
     'Here is your candy.'
     >>> v.add_funds(15)
     'Inventory empty. Restocking required. Here is your $15.'
-
     >>> w = VendingMachine('soda', 2)
     >>> w.restock(3)
     'Current soda stock: 3'
@@ -50,6 +54,39 @@ class VendingMachine:
     'Here is your soda.'
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, kind, price):
+        self.kind = kind 
+        self.price = price
+        self.inventory = 0
+        self.funds = 0
+
+    def vend(self):
+        if self.inventory == 0:
+            return 'Inventory empty. Restocking required.'
+        elif self.funds == self.price:
+            self.funds -= self.price
+            self.inventory -= 1
+            return 'Here is your ' + str(self.kind) + '.'
+        elif self.funds < self.price:
+            return 'You must add $' + str(self.price - self.funds) + ' more funds.'
+        else:
+            self.inventory -= 1
+            ret = 'Here is your ' + str(self.kind) + ' and $' + str(self.funds - self.price) + ' change.'
+            self.funds = 0
+            return ret
+    
+    def add_funds(self, funds):
+        if self.inventory == 0:
+            return 'Inventory empty. Restocking required. Here is your $' + str(funds) +'.'
+        else:
+            self.funds += funds
+            return 'Current balance: $' + str(self.funds)
+        
+    def restock(self, inventory):
+        self.inventory += inventory
+        return 'Current ' + str(self.kind) + ' stock: ' + str(self.inventory)
+
+
 
 
 class Mint:
@@ -88,9 +125,12 @@ class Mint:
 
     def create(self, kind):
         "*** YOUR CODE HERE ***"
+        return kind(self.year)
 
     def update(self):
         "*** YOUR CODE HERE ***"
+        # 设置年份
+        self.year = Mint.current_year
 
 class Coin:
     def __init__(self, year):
@@ -98,6 +138,8 @@ class Coin:
 
     def worth(self):
         "*** YOUR CODE HERE ***"
+        worth = Mint.current_year - self.year
+        return self.cents + (0 if worth < 50 else worth - 50)
 
 class Nickel(Coin):
     cents = 5
@@ -132,6 +174,19 @@ def is_bst(t):
     False
     """
     "*** YOUR CODE HERE ***"
+    def helper(t, min, max):
+        if t.label < min or t.label > max:
+            return False
+        elif t.is_leaf():
+            return True
+        elif len(t.branches) > 2:
+            return False
+        elif len(t.branches) == 2:
+            return helper(t.branches[0], min, t.label) and helper(t.branches[1], t.label, max)
+        elif len(t.branches) == 1:
+            return helper(t.branches[0], min, max)
+    return helper(t, float("-inf"), float("inf"))
+
 
 
 def store_digits(n):
@@ -150,7 +205,17 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
-
+    if n < 10:
+        return Link(n)
+    # 获取到n的每一位，建立指针，最后一位是Link(n % 10)
+    prev = store_digits(n // 10)
+    # 获取到prev的指针
+    p = prev
+    while p.rest is not Link.empty:
+        p = p.rest
+    p.rest = Link(n % 10)
+    return prev
+        
 
 def path_yielder(t, value):
     """Yields all possible paths from the root of t to a node with the label value
@@ -188,10 +253,11 @@ def path_yielder(t, value):
     """
 
     "*** YOUR CODE HERE ***"
-
-    for _______________ in _________________:
-        for _______________ in _________________:
-
+    if t.label == value:
+        yield[value]
+    for b in t.branches:
+        for path in path_yielder(b, value):
+            yield [t.label] + path
             "*** YOUR CODE HERE ***"
 
 
@@ -213,6 +279,18 @@ def remove_all(link , value):
     <0 1>
     """
     "*** YOUR CODE HERE ***"
+    dummy = Link(0, link)
+    p = dummy
+    current = p.rest
+    while p.rest is not Link.empty:
+        if current.first == value:
+            p.rest = current.rest
+            current = current.rest
+        else:
+            p = current
+            current = current.rest
+    
+
 
 
 def deep_map(f, link):
@@ -229,6 +307,13 @@ def deep_map(f, link):
     <<2 <4 6> 8> <<10>>>
     """
     "*** YOUR CODE HERE ***"
+    # 不改变原本的link
+    if link == Link.empty:
+        return link
+    elif type(link.first) == Link:
+        return Link(deep_map(f, link.first), deep_map(f, link.rest))
+    else:
+        return Link(f(link.first), deep_map(f, link.rest))
 
 
 class Tree:
