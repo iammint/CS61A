@@ -1,6 +1,8 @@
 """Typing test implementation"""
 
+from os import times
 from time import sleep
+from webbrowser import Galeon
 from utils import *
 from ucb import main, interact, trace
 from datetime import datetime
@@ -69,6 +71,14 @@ def accuracy(typed, reference):
     reference_words = split(reference)
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    total = len(typed_words)
+    if total == 0:
+        return 0.0
+    correct = 0
+    for t, r in zip(typed_words, reference_words):
+        correct += (t == r)
+    return 100 * correct / total
+
     # END PROBLEM 3
 
 
@@ -77,6 +87,8 @@ def wpm(typed, elapsed):
     assert elapsed > 0, 'Elapsed time must be positive'
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    return  len(typed) / 5 / elapsed * 60
+
     # END PROBLEM 4
 
 
@@ -87,6 +99,12 @@ def autocorrect(user_word, valid_words, diff_function, limit):
     """
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    if user_word in valid_words:
+        return user_word
+    ret = min(valid_words, key=lambda word: diff_function(user_word, word, limit))
+    if diff_function(user_word, ret, limit) > limit:
+        return user_word
+    return ret
     # END PROBLEM 5
 
 
@@ -96,30 +114,45 @@ def shifty_shifts(start, goal, limit):
     their lengths.
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    # I need to compare every character one by one, limit reduced one when different
+    # so in the procedure it will result in two conditions:
+    # 1. when limit is 0 we need to stop and return 0
+    # 2. when len(start) or len(goal) is 0 we need to stop and add the larger length substracted by the smaller one
+    if limit < 0:
+        return 0
+    elif not len(start) or not len(goal):
+        return len(start) + len(goal)
+    elif start[0] == goal[0]:
+        return shifty_shifts(start[1:], goal[1:], limit)
+    else:
+        return 1 + shifty_shifts(start[1:], goal[1:], limit - 1)
     # END PROBLEM 6
 
 
 def meowstake_matches(start, goal, limit):
     """A diff function that computes the edit distance from START to GOAL."""
-    assert False, 'Remove this line'
 
-    if ______________: # Fill in the condition
+    if limit < 0: # Fill in the condition
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 0
         # END
 
-    elif ___________: # Feel free to remove or add additional cases
+    elif not start or not goal: # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return len(start) + len(goal)
         # END
 
+    elif start[0] == goal[0]:
+        return meowstake_matches(start[1:], goal[1:], limit)
     else:
-        add_diff = ...  # Fill in these lines
-        remove_diff = ... 
-        substitute_diff = ... 
+        add_diff = meowstake_matches(start, goal[1:], limit - 1)
+        remove_diff = meowstake_matches(start[1:], goal, limit - 1)
+        substitute_diff = meowstake_matches(start[1:], goal[1:], limit - 1)
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 1 + min(add_diff, remove_diff, substitute_diff)
         # END
 
 
@@ -137,6 +170,19 @@ def report_progress(typed, prompt, id, send):
     """Send a report of your id and progress so far to the multiplayer server."""
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    count = 0
+    # for index, word in enumerate(typed):
+    #     if prompt[index] == word:
+    #         count += 1
+    for w1, w2 in zip(typed, prompt):
+        if w1 == w2:
+            count += 1
+        else:
+            break
+    progress = count / len(prompt)
+    send({"id": id, "progress": progress})
+    return progress
+
     # END PROBLEM 8
 
 
@@ -163,6 +209,15 @@ def time_per_word(times_per_player, words):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    # [[0, 1, 2, 3], [2, 5, 6, 7]] => [[1, 1, 1], [3, 1, 1]]
+    times = []
+    for i in range(len(times_per_player)):
+        time = []
+        for j in range(1, len(times_per_player[0])):
+            time.append(times_per_player[i][j] - times_per_player[i][j - 1])
+        times.append(time)
+    return game(words, times)
+            
     # END PROBLEM 9
 
 
@@ -178,6 +233,18 @@ def fastest_words(game):
     words = range(len(all_words(game)))    # An index for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    # Access time_speed for every player
+    fastest_words = [[] for i in players]
+    for i in words:
+        minimun = float('inf') # Python's largest number
+        word = word_at(game, i)
+        index = 0
+        for j in players:
+            if time(game, j, i) < minimun:
+                minimun = time(game, j, i)
+                index = j
+        fastest_words[index].append(word)
+    return fastest_words
     # END PROBLEM 10
 
 
