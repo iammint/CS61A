@@ -427,3 +427,92 @@ def Fibonacci(n):
 ```
 
 This recursive definition is tremendously appealing relative to our previous attempts: it exactly mirrors the familiar definition of Fibonacci numbers. A function with multiple recursive calls is said to be tree recursive because each call branches into multiple smaller calls, each of which branches into yet smaller calls, just as the branches of a tree become smaller but more numerous as they extend from the trunk.
+
+## Types of Recursion
+
+1. Direct recursion
+2. Indirect recursion
+3. Tail recursion
+4. Non-tail recursion
+
+### 1. Direct Recursion
+
+> A function is called `direct recursion` if it calls the same function agian.
+
+```py
+def func():
+    # Some code
+    func()
+    # Some code
+```
+
+### 2. Indirect Recursion
+
+> A function(eg: func) is called indirect recursive if it calls another function(eg: func2) and then `func2` calls `func` directly or indirectly.
+
+```py
+def func():
+    # Some code
+    func2()
+    # Some code
+
+def func2():
+    # Some code
+    func()
+    # Some code
+```
+
+```py
+n = 1
+def odd(n):
+    if n <= 10:
+        print(n + 1)
+        n ++
+        even(n)
+    return
+
+def even(n):
+    if n <= 10:
+        print(n - 1)
+        n ++
+        odd(n)
+    return
+```
+
+### 3. Tail Recursion
+
+> A recursive function is said to be `tail recursion` if the recursive call is the last thing done by the function. There is no need to keep record of the previous state.
+
+```py
+def func(n):
+    if n == 0:
+        return
+    else:
+        print(n)
+    return func(n - 1)
+
+func(3)
+```
+
+### 4. Non-Tail Recursion
+
+> A recursive function is said to be `non-tail recursive` if the recursive call is not the last thing done by the function. After returning back, there is some something left to evaluate.
+
+```py
+def func(n):
+    if n == 0:
+        return
+    func(n - 1)
+    print(n)
+
+func(3)
+```
+
+```py
+def func(n):
+    if n == 1:
+        return 0
+    else:
+        return 1 + func(n / 2)
+    print(func(8))
+```
